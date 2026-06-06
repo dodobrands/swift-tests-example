@@ -356,6 +356,15 @@ func runWorkspaceTests(for platform: PlatformConfig, xcodeVersion: String) -> St
     // Using a single "test" command (instead of separating build-for-testing and test-without-building)
     // ensures that both build warnings from source code compilation and test warnings from test execution
     // are included in the generated xcresult bundle.
+    // On macOS, disable app sandbox / hardened runtime for the host app.
+    // Xcode 26.5 regression: with sandbox enabled, the llvm coverage runtime cannot
+    // write profraw to the path xccov expects, so the result bundle ends up without
+    // a coverage archive (xccov view fails with "Failed to load coverage archive").
+    // Affects workspace + macOS app-host only; iOS/visionOS via simctl are fine.
+    var sandboxOverrides: [String] = []
+    if platform.name == "macOS" {
+        sandboxOverrides = ["ENABLE_APP_SANDBOX=NO", "ENABLE_HARDENED_RUNTIME=NO"]
+    }
     print("\n🧪 Running tests...")
     let testExitCode = runXcodebuild(arguments: [
         "test",
@@ -370,7 +379,7 @@ func runWorkspaceTests(for platform: PlatformConfig, xcodeVersion: String) -> St
         "-collect-test-diagnostics", "never",
         "-enablePerformanceTestsDiagnostics", "NO",
         "-derivedDataPath", tempDerivedDataPath
-    ], workingDirectory: xcworkspaceDirectory)
+    ] + sandboxOverrides, workingDirectory: xcworkspaceDirectory)
     
     // Find the generated xcresult file
     guard let generatedXcresultPath = findLatestXcresult(in: tempDerivedDataPath) else {
