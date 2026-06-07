@@ -61,6 +61,9 @@ The key difference in generated xcresult files is that workspace projects organi
 | Throwing | ✅ | ✅ |
 | Attachment | ✅ | ✅ |
 | Performance | ✅ | ❌ |
+| Root level (no suite) | ❌ | ✅ |
+| Nested suite | ❌ | ✅ |
+| Backtick-escaped name | ❌ | ✅ |
 
 **Note:** Missing test types (❌) indicate that the frameworks do not support these test types, at least as of today.
 
