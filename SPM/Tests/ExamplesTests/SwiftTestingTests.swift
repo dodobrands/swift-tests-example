@@ -100,3 +100,145 @@ struct ExampleSUITests {
         #expect(Bool(true))
     }
 }
+
+// MARK: - Root level tests (no enclosing @Suite)
+//
+// Demonstrates Swift Testing's ability to declare @Test functions at file
+// scope, without wrapping them in a @Suite type. Peekie needs to surface
+// these tests in its report (issue #127 / PR #151).
+
+// Covers: root-level success test case
+@Test
+func rootLevelSuccess() {
+    let calculator = Calculator()
+    let result = calculator.add(2, 3)
+    #expect(result == 5.0)
+}
+
+// Covers: root-level failure test case
+@Test
+func rootLevelFailure() {
+    let calculator = Calculator()
+    let result = calculator.multiply(2, 3)
+    Issue.record("Expected 5.0 but got \(result)")
+}
+
+// Covers: root-level async test case
+@Test
+func rootLevelAsync() async {
+    let calculator = Calculator()
+    try? await Task.sleep(nanoseconds: 10_000_000)
+    let result = calculator.add(2, 3)
+    #expect(result == 5.0)
+}
+
+// Covers: root-level test with a backtick-escaped name (spaces, punctuation)
+@Test
+func `root level with spaces in name`() {
+    let calculator = Calculator()
+    #expect(calculator.add(1, 2) == 3.0)
+}
+
+// Covers: root-level test whose name contains punctuation and operators
+@Test
+func `2 + 3 = 5`() {
+    let calculator = Calculator()
+    #expect(calculator.add(2, 3) == 5.0)
+}
+
+// Covers: backtick name with an emoji
+@Test
+func `success 🎯`() {
+    let calculator = Calculator()
+    #expect(calculator.add(1, 1) == 2.0)
+}
+
+// Covers: backtick name with parentheses and a slash
+@Test
+func `divide(10, 2) / returns 5`() {
+    let calculator = Calculator()
+    #expect((try? calculator.divide(10, 2)) == 5.0)
+}
+
+// Covers: backtick name with Cyrillic characters
+@Test
+func `сложение работает`() {
+    let calculator = Calculator()
+    #expect(calculator.add(7, 8) == 15.0)
+}
+
+// Covers: backtick name with square brackets and a question mark
+@Test
+func `array[0] is nil?`() {
+    let array: [Int] = []
+    #expect(array.first == nil)
+}
+
+// MARK: - Nested @Suite
+//
+// Demonstrates a @Suite type declared inside another @Suite type. The
+// resulting hierarchy is multiple suite levels deep (PR #151).
+
+@Suite
+struct OuterSuite {
+    // Covers: success in the outer level of a nested suite hierarchy
+    @Test
+    func outerSuccess() {
+        let calculator = Calculator()
+        let result = calculator.add(10, 20)
+        #expect(result == 30.0)
+    }
+
+    // Covers: failure in the outer level of a nested suite hierarchy
+    @Test
+    func outerFailure() {
+        let calculator = Calculator()
+        let result = calculator.multiply(10, 20)
+        Issue.record("Outer suite failure: result was \(result)")
+    }
+
+    // Covers: backtick-escaped name inside an outer suite
+    @Test
+    func `outer with spaces in name`() {
+        let calculator = Calculator()
+        #expect(calculator.add(5, 5) == 10.0)
+    }
+
+    @Suite
+    struct InnerSuite {
+        // Covers: success in the inner level of a nested suite hierarchy
+        @Test
+        func innerSuccess() {
+            let calculator = Calculator()
+            let result = calculator.subtract(10, 3)
+            #expect(result == 7.0)
+        }
+
+        // Covers: failure in the inner level of a nested suite hierarchy
+        @Test
+        func innerFailure() {
+            let calculator = Calculator()
+            let result = calculator.multiply(3, 4)
+            Issue.record("Inner suite failure: result was \(result)")
+        }
+
+        @Suite
+        struct DeeplyNestedSuite {
+            // Covers: success in a three-level nested suite hierarchy
+            @Test
+            func deeplyNestedSuccess() {
+                let calculator = Calculator()
+                let result = calculator.add(1, 1)
+                #expect(result == 2.0)
+            }
+
+            // Covers: failure in a three-level nested suite hierarchy
+            @Test
+            func deeplyNestedFailure() {
+                let calculator = Calculator()
+                let result = calculator.subtract(1, 1)
+                Issue.record("Deeply nested failure: result was \(result)")
+            }
+        }
+    }
+}
