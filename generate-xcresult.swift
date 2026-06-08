@@ -256,7 +256,15 @@ func runSPMTests(for platform: PlatformConfig, xcodeVersion: String) -> String? 
     // code coverage data. This appears to be a bug in xcodebuild. As a workaround, we specify
     // -derivedDataPath and manually locate the generated xcresult file in the DerivedData directory.
     let tempDerivedDataPath = "\(spmDirectory)/DerivedData"
-    
+
+    // Wipe DerivedData so incremental builds don't suppress compiler diagnostics
+    // (e.g. DeprecatedDeclaration / No-usage warnings disappear on incremental
+    // rebuilds when source files haven't changed since the last cached build).
+    if fileManager.fileExists(atPath: tempDerivedDataPath) {
+        print("🧹 Cleaning DerivedData at \(tempDerivedDataPath)")
+        try? fileManager.removeItem(atPath: tempDerivedDataPath)
+    }
+
     // Run tests with a single test command
     // Using a single "test" command (instead of separating build-for-testing and test-without-building)
     // ensures that both build warnings from source code compilation and test warnings from test execution
@@ -351,7 +359,15 @@ func runWorkspaceTests(for platform: PlatformConfig, xcodeVersion: String) -> St
     // code coverage data. This appears to be a bug in xcodebuild. As a workaround, we specify
     // -derivedDataPath and manually locate the generated xcresult file in the DerivedData directory.
     let tempDerivedDataPath = "\(xcworkspaceDirectory)/DerivedData"
-    
+
+    // Wipe DerivedData so incremental builds don't suppress compiler diagnostics
+    // (e.g. DeprecatedDeclaration / No-usage warnings disappear on incremental
+    // rebuilds when source files haven't changed since the last cached build).
+    if fileManager.fileExists(atPath: tempDerivedDataPath) {
+        print("🧹 Cleaning DerivedData at \(tempDerivedDataPath)")
+        try? fileManager.removeItem(atPath: tempDerivedDataPath)
+    }
+
     // Run tests with a single test command
     // Using a single "test" command (instead of separating build-for-testing and test-without-building)
     // ensures that both build warnings from source code compilation and test warnings from test execution
