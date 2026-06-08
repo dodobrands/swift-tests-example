@@ -65,6 +65,8 @@ The key difference in generated xcresult files is that workspace projects organi
 | Attachment scoped to an activity | ✅ | ❌ |
 | Attachment in a root-level test | ❌ | ✅ |
 | Attachment in a nested suite | ❌ | ✅ |
+| Binary (PNG) attachment | ✅ | ✅ |
+| Raw binary attachment without an extension | ❌ | ✅ |
 | Performance | ✅ | ❌ |
 | Root level (no suite) | ❌ | ✅ |
 | Nested suite | ❌ | ✅ |
