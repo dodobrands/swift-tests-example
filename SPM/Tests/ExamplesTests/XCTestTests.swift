@@ -82,11 +82,57 @@ class XCTestTests: XCTestCase {
         let calculator = Calculator()
         let result = calculator.add(2, 3)
         XCTAssertEqual(result, 5.0)
-        
+
         let attachment = XCTAttachment(string: "Test result: \(result)")
         attachment.name = "Calculation Result"
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    // Covers: multiple XCTAttachments on a single test case
+    func test_withMultipleAttachments() {
+        let calculator = Calculator()
+        let sum = calculator.add(2, 3)
+        let product = calculator.multiply(2, 3)
+        XCTAssertEqual(sum, 5.0)
+        XCTAssertEqual(product, 6.0)
+
+        let first = XCTAttachment(string: "Sum: \(sum)")
+        first.name = "Sum result"
+        first.lifetime = .keepAlways
+        add(first)
+
+        let second = XCTAttachment(string: "Product: \(product)")
+        second.name = "Product result"
+        second.lifetime = .keepAlways
+        add(second)
+    }
+
+    // Covers: XCTAttachment scoped to an XCTContext.runActivity
+    func test_attachmentInsideActivity() {
+        let calculator = Calculator()
+        XCTContext.runActivity(named: "Compute and record") { activity in
+            let result = calculator.add(10, 20)
+            XCTAssertEqual(result, 30.0)
+
+            let attachment = XCTAttachment(string: "Activity-scoped result: \(result)")
+            attachment.name = "Activity attachment"
+            attachment.lifetime = .keepAlways
+            activity.add(attachment)
+        }
+    }
+
+    // Covers: XCTAttachment recorded on a test that also reports a failure
+    func test_failureWithAttachment() {
+        let calculator = Calculator()
+        let result = calculator.multiply(2, 3)
+
+        let attachment = XCTAttachment(string: "Operands: 2 and 3, got \(result)")
+        attachment.name = "Failure context"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+
+        XCTFail("Expected 5.0 but got \(result)")
     }
     
     // Covers: performance measurement test case

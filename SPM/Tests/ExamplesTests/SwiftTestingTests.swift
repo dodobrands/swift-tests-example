@@ -91,10 +91,37 @@ struct ExampleSUITests {
         let calculator = Calculator()
         let result = calculator.add(2, 3)
         #expect(result == 5.0)
-        
+
         Attachment.record("Test result: \(result)", named: "Calculation Result")
     }
-    
+
+    // Covers: multiple attachments on a single test
+    @Test
+    func withMultipleAttachments() {
+        let calculator = Calculator()
+        let sum = calculator.add(2, 3)
+        let product = calculator.multiply(2, 3)
+        #expect(sum == 5.0)
+        #expect(product == 6.0)
+
+        Attachment.record("Sum: \(sum)", named: "Sum result")
+        Attachment.record("Product: \(product)", named: "Product result")
+        Attachment.record("Inputs were 2 and 3", named: "Operands")
+    }
+
+    // Covers: attachment recorded on a test that also reports a failure —
+    // exercised by Peekie's `isAssociatedWithFailure: true` codepath.
+    @Test
+    func failureWithAttachment() {
+        let calculator = Calculator()
+        let result = calculator.multiply(2, 3)
+        Attachment.record(
+            "Operands: 2 and 3, expected 5, got \(result)",
+            named: "Failure context"
+        )
+        Issue.record("Expected 5.0 but got \(result)")
+    }
+
     func withWarning() {
 #warning("Some warning from ExampleSUITests")
         #expect(Bool(true))
@@ -130,6 +157,16 @@ func rootLevelAsync() async {
     try? await Task.sleep(nanoseconds: 10_000_000)
     let result = calculator.add(2, 3)
     #expect(result == 5.0)
+}
+
+// Covers: attachment recorded from a root-level @Test (no enclosing @Suite).
+@Test
+func rootLevelWithAttachment() {
+    let calculator = Calculator()
+    let result = calculator.add(4, 4)
+    #expect(result == 8.0)
+
+    Attachment.record("Root-level recorded value: \(result)", named: "Root attachment")
 }
 
 // Covers: root-level test with a backtick-escaped name (spaces, punctuation)
@@ -238,6 +275,19 @@ struct OuterSuite {
                 let calculator = Calculator()
                 let result = calculator.subtract(1, 1)
                 Issue.record("Deeply nested failure: result was \(result)")
+            }
+
+            // Covers: attachment recorded in a three-level nested @Suite.
+            @Test
+            func deeplyNestedWithAttachment() {
+                let calculator = Calculator()
+                let result = calculator.multiply(6, 7)
+                #expect(result == 42.0)
+
+                Attachment.record(
+                    "Recorded inside DeeplyNestedSuite, result: \(result)",
+                    named: "Deeply nested attachment"
+                )
             }
         }
     }

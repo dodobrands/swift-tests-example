@@ -60,6 +60,11 @@ The key difference in generated xcresult files is that workspace projects organi
 | Async | ✅ | ✅ |
 | Throwing | ✅ | ✅ |
 | Attachment | ✅ | ✅ |
+| Multiple attachments per test | ✅ | ✅ |
+| Attachment recorded alongside a failure | ✅ | ✅ |
+| Attachment scoped to an activity | ✅ | ❌ |
+| Attachment in a root-level test | ❌ | ✅ |
+| Attachment in a nested suite | ❌ | ✅ |
 | Performance | ✅ | ❌ |
 | Root level (no suite) | ❌ | ✅ |
 | Nested suite | ❌ | ✅ |
