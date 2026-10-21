@@ -21,7 +21,7 @@ struct PlatformConfig {
 let platforms: [PlatformConfig] = [
     PlatformConfig(name: "macOS", simulatorName: "", deviceType: "", runtime: ""),
     PlatformConfig(name: "iOS", simulatorName: "iPhone 15", deviceType: "iPhone 15", runtime: "iOS"),
-    PlatformConfig(name: "tvOS", simulatorName: "Apple TV", deviceType: "Apple TV", runtime: "tvOS"),
+    PlatformConfig(name: "tvOS", simulatorName: "Apple TV 4K (3rd generation)", deviceType: "Apple TV 4K (3rd generation)", runtime: "tvOS"),
     PlatformConfig(name: "watchOS", simulatorName: "Apple Watch Series 9 (45mm)", deviceType: "Apple Watch Series 9 (45mm)", runtime: "watchOS"),
     PlatformConfig(name: "visionOS", simulatorName: "Apple Vision Pro", deviceType: "Apple Vision Pro", runtime: "visionOS")
 ]

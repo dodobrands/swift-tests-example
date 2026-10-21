@@ -105,16 +105,16 @@ The script automatically saves all generated xcresult files to the `xcresults` d
 The script generates separate xcresult files for each project type and platform in the `xcresults` directory:
 
 **SPM Package Results:**
-- `xcresults/SPM-26.1.1-macOS.xcresult`
-- `xcresults/SPM-26.1.1-iOS.xcresult`
-- `xcresults/SPM-26.1.1-tvOS.xcresult`
-- `xcresults/SPM-26.1.1-watchOS.xcresult`
-- `xcresults/SPM-26.1.1-visionOS.xcresult`
+- `xcresults/SPM-27.0-macOS.xcresult`
+- `xcresults/SPM-27.0-iOS.xcresult`
+- `xcresults/SPM-27.0-tvOS.xcresult`
+- `xcresults/SPM-27.0-watchOS.xcresult`
+- `xcresults/SPM-27.0-visionOS.xcresult`
 
 **Xcode Workspace Results:**
-- `xcresults/Xcworkspace-26.1.1-macOS.xcresult`
-- `xcresults/Xcworkspace-26.1.1-iOS.xcresult`
-- `xcresults/Xcworkspace-26.1.1-visionOS.xcresult`
+- `xcresults/Xcworkspace-27.0-macOS.xcresult`
+- `xcresults/Xcworkspace-27.0-iOS.xcresult`
+- `xcresults/Xcworkspace-27.0-visionOS.xcresult`
 
 ## Build Warnings in xcresult
 
